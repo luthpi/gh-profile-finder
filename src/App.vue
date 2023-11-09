@@ -6,6 +6,8 @@ import "animate.css";
 import LocationDot from "@/components/LocationDot.vue";
 import MagnifyingGlass from "@/components/MagnifyingGlass.vue";
 import BookWithBookmark from "@/components/BookWithBookmark.vue";
+import LinkChain from "@/components/LinkChain.vue";
+import Linker from "@/components/Linker.vue";
 
 const apiUrl = "https://api.github.com/users";
 const token = import.meta.env.VITE_TOKEN;
@@ -47,7 +49,8 @@ const fetchApi = async () => {
 <template>
   <!-- Finder Bar -->
   <div
-    class="fixed top-0 px-3 w-fit h-[60px] bg-[#252525] shadow-md flex mt-2 items-center overflow-hidden rounded-2xl center-fixed z-50"
+    class="fixed px-3 w-fit h-[60px] bg-[#252525] shadow-md flex items-center overflow-hidden top-0 rounded-2xl mt-2 center-fixed z-50 transition"
+    id="finder-bar"
   >
     <div class="w-full flex justify-center">
       <span
@@ -82,44 +85,54 @@ const fetchApi = async () => {
         v-if="data.avatar_url"
         :src="data.avatar_url"
       />
-      <a
-        target="_blank"
-        :href="data.html_url"
+      <h1
         v-if="data.name"
-        class="text-[1.7rem] w-fit font-bold"
-        >{{ data.name }}</a
+        class="text-[1.4rem] w-fit font-bold flex gap-2 items-center"
       >
-      <a
-        target="_blank"
-        :href="data.html_url"
+        {{ data.name }}
+        <linker :url="data.html_url" />
+      </h1>
+      <h1
         :class="
           data.name
-            ? 'text-gray-200 text-[18px] w-fit -mt-[6px]'
-            : 'text-[1.7rem] font-bold w-fit'
+            ? 'text-gray-200 text-[18px] -mt-[6px]'
+            : 'text-[1.7rem] font-bold flex gap-2 items-center'
         "
-        >{{ data.name ? "@" : "" }}{{ data.login }}</a
       >
+        {{ data.name ? "@" : "" }}{{ data.login }}
+        <linker :url="data.html_url" v-if="!data.name" />
+      </h1>
       <span class="flex gap-2 text-sm items-center">
         <span>Followers: {{ data.followers }}</span>
         <span>Following: {{ data.following }}</span>
       </span>
       <span class="text-gray-200 text-sm flex">
-        <location-dot v-if="data.location" class="invert mt-[2px] pr-1" />
+        <location-dot v-if="data.location" class="invert mt-[2px] w-6 pr-1" />
         {{ data.location ? data.location : "" }}
       </span>
-      <a class="text-sm underline text-blue-400" :href="data.blog">{{
-        data.blog
-      }}</a>
+      <a
+        class="text-sm underline text-blue-400 flex items-center"
+        v-if="data.blog"
+        :href="data.blog"
+      >
+        <link-chain class="invert pr-1 w-6" />
+        {{ data.blog }}
+      </a>
       <div class="w-full flex flex-col items-center text-[15px]">
         <p class="w-full">{{ data.bio ? data.bio : "" }}</p>
       </div>
       <div
         class="flex mt-2 flex-col gap-2 animate__animated animate_fadeInRightBig"
       >
-        <h1 class="text-2xl font-bold flex gap-1 items-center">
+        <h1 class="text-2xl font-bold flex gap-2 items-center">
           <book-with-bookmark class="invert" />
           Repositories
         </h1>
+        <span class="text-sm">{{
+          data.public_repos
+            ? "There are " + data.public_repos + " repositories"
+            : "No repositories found"
+        }}</span>
         <div
           class="flex flex-col gap-2"
           v-if="dataRepos.length"
@@ -129,7 +142,6 @@ const fetchApi = async () => {
             <a target="_blank" :href="repo.html_url">{{ repo.name }}</a>
           </div>
         </div>
-        <div v-else>No repositories found</div>
       </div>
     </div>
   </div>
@@ -139,7 +151,7 @@ const fetchApi = async () => {
     class="w-screen min-h-[90vh] md:min-h-screen bg-[#373737] flex flex-col justify-center items-center overflow-hidden pt-[72px] px-8 md:px-20 tracking-wide text-lg"
     v-if="!data.login && data.idle && !data.loading"
   >
-    GitHub Profile Searcher
+    GitHub Profile Finder
   </div>
 
   <!-- Shows when loading -->
@@ -152,10 +164,10 @@ const fetchApi = async () => {
 
   <!-- Shows when user not found -->
   <div
-    class="w-screen min-h-[90vh] md:min-h-screen bg-[#373737] flex flex-col justify-center items-center overflow-hidden pt-[72px] px-8 md:px-20 tracking-wide text-lg"
+    class="w-screen min-h-[90vh] md:min-h-screen bg-[#373737] flex flex-col justify-center items-center overflow-y-hidden pt-[72px] px-8 md:px-20 tracking-wide text-lg"
     v-if="data.message"
   >
-    <span class="text-6xl block font-bold"> 404 </span>
+    <span class="text-6xl overflow-hidden font-bold"> 404 </span>
     {{ data.message }}
   </div>
 </template>
