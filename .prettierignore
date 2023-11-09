@@ -1,0 +1,10 @@
+public/
+assets/
+.upm
+.config
+node_modules
+package.json
+yarn.lock
+.replit
+replit.nix
+.cache/

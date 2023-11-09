@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply text-white overflow-x-hidden;
+}
+
+body {
+  @apply w-screen flex box-border justify-center bg-[#373737];
+}
