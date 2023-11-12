@@ -9,10 +9,6 @@ Find profiles available on GitHub
 - Animate.css
 - Axios
 
-# Utilities
-
-- Prettier
-
 ## Icons
 
 Icons provided by Font Awesome
