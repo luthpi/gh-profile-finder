@@ -19,4 +19,4 @@ Icons provided by Font Awesome
 
 ## License
 
-MIT License
+Apache-2.0 License
